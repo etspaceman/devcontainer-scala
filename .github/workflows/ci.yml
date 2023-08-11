@@ -1,0 +1,37 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: [v*]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Build docker image
+        run: docker build -t ghcr.io/etspaceman/devcontainer-scala:latest .
+  publish:
+    name: Publish docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Build docker image
+        run: docker build -t ghcr.io/etspaceman/devcontainer-scala:latest .
+      - name: Login to registry
+        run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+      - name: Push to registry
+        run: docker push "ghcr.io/etspaceman/devcontainer-scala:latest"
+
