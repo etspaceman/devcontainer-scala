@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17
+FROM eclipse-temurin:21
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install nano vim-tiny git gnupg2 curl wget unzip zip htop -y
